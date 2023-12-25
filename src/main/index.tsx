@@ -1,4 +1,5 @@
 import { Categories } from '../components/Categories';
+import { Button } from '../components/Categories/Button';
 import { Header } from '../components/Header';
 import { Menu } from '../components/Menu';
 import { Container,
@@ -20,7 +21,7 @@ export function Main(){
       </Container>
       <Footer>
         <FooterContainer>
-
+          <Button/>
         </FooterContainer>
       </Footer>
 
