@@ -2,22 +2,28 @@ import { Categories } from '../components/Categories';
 import { Button } from '../components/Categories/Button';
 import { Header } from '../components/Header';
 import { Menu } from '../components/Menu';
+import { Text } from '../components/Text';
 import { TableModal } from '../components/TableModal';
 import { Container,
   CategoriesContainer,
   MenuContainer,
   Footer,
-  FooterContainer,} from './styles';
+  FooterContainer,
+  CenteredContainer} from './styles';
 import { useState } from 'react';
 import { Cart } from '../components/Cart';
 import { CartItem } from '../CartItem';
 import { IProduct } from '../product';
+import { ActivityIndicator } from 'react-native';
+import { products as mockProducts } from '../mocks/products';
+import { Empty } from '../components/Icons/Empty';
 
 export function Main(){
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState('');
   const [cartItens, setCartItens] = useState<CartItem[]>([]);
-
+  const [isLoding] = useState(false);
+  const [products] = useState<IProduct[]>(mockProducts);
 
   function hadleOnSave(table: string){
     setSelectedTable(table);
@@ -79,8 +85,6 @@ export function Main(){
     });
   }
 
-
-
   return(
     <>
       <Container>
@@ -88,17 +92,41 @@ export function Main(){
           selectedTable={selectedTable}
           onCancelOrder={handleResetOrder}
         />
-        <CategoriesContainer>
-          <Categories/>
-        </CategoriesContainer>
-        <MenuContainer>
-          <Menu onAddToCart={handleAddToCart}/>
-        </MenuContainer>
+        {isLoding && (
+          <CenteredContainer>
+            <ActivityIndicator size='large' color='#D73035'/>
+          </CenteredContainer>
+
+        )}
+
+        {!isLoding && (
+          <>
+            <CategoriesContainer>
+              <Categories/>
+            </CategoriesContainer>
+
+            {products.length > 0 ? (
+              <MenuContainer>
+
+                <Menu onAddToCart={handleAddToCart} products={products}/>
+
+              </MenuContainer>
+            ): (
+              <CenteredContainer>
+                <Empty/>
+                <Text color='#666'>Nenhum produto foi encontrado!</Text>
+              </CenteredContainer>
+
+            )}
+          </>
+
+
+        )}
       </Container>
       <Footer>
         <FooterContainer>
           {!selectedTable && (
-            <Button onPress={() => setModalVisible(true)}>
+            <Button onPress={() => setModalVisible(true)} disabeld={isLoding}>
            Novo pedido
             </Button>
           )}

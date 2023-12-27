@@ -12,8 +12,8 @@ interface ButtonProps {
 export function Button({children, onPress, disabeld, loading}: ButtonProps){
   return (
     <Container onPress={onPress} disabled={disabeld || loading}>
-     {!loading && (
-       <Text weight='600' color="#fff">{children}</Text>
+      {!loading && (
+        <Text weight='600' color="#fff">{children}</Text>
       )}
 
       {loading && (
