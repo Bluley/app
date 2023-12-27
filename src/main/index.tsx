@@ -10,9 +10,13 @@ import { Container,
   Footer,
   FooterContainer} from './styles';
 import { useState } from 'react';
+import { Cart } from '../components/Cart';
+import { CartItem } from '../CartItem';
+import { products } from '../mocks/products';
 export function Main(){
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState('');
+  const [cartItens, setCartItens] = useState<CartItem[]>([]);
 
 
   function hadleOnSave(table: string){
@@ -20,10 +24,17 @@ export function Main(){
     setSelectedTable(table);
   }
 
+  function handleCancelOrder(){
+    setSelectedTable('');
+  }
+
   return(
     <>
       <Container>
-        <Header/>
+        <Header
+          selectedTable={selectedTable}
+          onCancelOrder={handleCancelOrder}
+        />
         <CategoriesContainer>
           <Categories/>
         </CategoriesContainer>
@@ -32,13 +43,18 @@ export function Main(){
         </MenuContainer>
       </Container>
       <Footer>
-        <FooterContainer>
-          {!selectedTable && (
-            <Button onPress={() => setModalVisible(true)} >
+        {/* <FooterContainer> */}
+        {!selectedTable && (
+          <Button onPress={() => setModalVisible(true)}>
            Novo pedido
-            </Button>
-          )}
-        </FooterContainer>
+          </Button>
+        )}
+
+        {selectedTable && (
+          <Cart cartItens={cartItens}/>
+
+        )}
+        {/* </FooterContainer> */}
       </Footer>
 
 
