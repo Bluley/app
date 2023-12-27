@@ -12,7 +12,10 @@ import { PlusCircle } from '../Icons/PlusCircle';
 import { ProductModal } from '../ProductModal';
 import { useState } from 'react';
 import { IProduct } from '../../product';
-export function Menu() {
+interface MenuProps{
+  onAddToCart: (product: IProduct) => void;
+}
+export function Menu({onAddToCart}: MenuProps) {
   const [isModalVisivle, setIsModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<null | IProduct>(null);
 
@@ -24,6 +27,7 @@ export function Menu() {
   return(
     <>
       <ProductModal
+        onAddToCart={onAddToCart}
         visible={isModalVisivle}
         onClose={() => setIsModalVisible(false)}
         product={selectedProduct}
@@ -46,7 +50,7 @@ export function Menu() {
               <Text>{formatCurrency(product.price)}</Text>
             </ProductDetails>
 
-            <AddToCartButton>
+            <AddToCartButton onPress={() => onAddToCart(product)}>
               <PlusCircle/>
             </AddToCartButton>
           </Product>

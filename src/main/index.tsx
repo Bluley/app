@@ -7,12 +7,12 @@ import { TableModal } from '../components/TableModal';
 import { Container,
   CategoriesContainer,
   MenuContainer,
-  Footer,
-  FooterContainer} from './styles';
+  Footer,} from './styles';
 import { useState } from 'react';
 import { Cart } from '../components/Cart';
 import { CartItem } from '../CartItem';
 import { products } from '../mocks/products';
+import { IProduct } from '../product';
 export function Main(){
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState('');
@@ -28,6 +28,32 @@ export function Main(){
     setSelectedTable('');
   }
 
+  function handleAddToCart(product: IProduct){
+    if(!selectedTable){
+      setModalVisible(true);
+    }
+
+    setCartItens(oldItens => {
+      const itemIndex = oldItens.findIndex(item => item.product._id === product._id);
+
+      if(itemIndex < 0){
+        return oldItens.concat({
+          product,
+          quantity: 1,
+        });
+      }
+
+      const newCartItens = [...oldItens];
+      const item = newCartItens[itemIndex];
+
+      newCartItens[itemIndex] = {
+        ...item,
+        quantity: item.quantity + 1,
+      };
+      return newCartItens;
+    });
+  }
+
   return(
     <>
       <Container>
@@ -39,7 +65,7 @@ export function Main(){
           <Categories/>
         </CategoriesContainer>
         <MenuContainer>
-          <Menu/>
+          <Menu onAddToCart={handleAddToCart}/>
         </MenuContainer>
       </Container>
       <Footer>
@@ -62,6 +88,7 @@ export function Main(){
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSave={hadleOnSave}
+
       />
 
     </>

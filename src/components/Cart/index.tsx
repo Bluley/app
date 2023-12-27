@@ -19,7 +19,7 @@ export function Cart({cartItens}: CartProps){
           data={cartItens}
           style={{marginBottom: 20, maxHeight: 150}}
           keyExtractor={cartItem => cartItem.product._id}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={true}
           renderItem={({item: cartItem}) => (
             <Item>
               <ProductContainer>
@@ -31,7 +31,7 @@ export function Cart({cartItens}: CartProps){
                   <Text size={14} color='#666'>
                     {cartItem.quantity} x
                   </Text>
-                </QuantityContainer>7
+                </QuantityContainer>
 
                 <ProductDetails>
                   <Text size={14} weight='600'>
@@ -58,7 +58,7 @@ export function Cart({cartItens}: CartProps){
 
       <Sumary>
         <TotalContainer>
-          {cartItens.length < 0 ? (
+          {cartItens.length > 0 ? (
             <>
               <Text color='#666'>Total</Text>
               <Text size={20} weight='600'>{formatCurrency(120)}</Text>
