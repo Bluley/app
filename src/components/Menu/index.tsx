@@ -11,6 +11,7 @@ import { PlusCircle } from '../Icons/PlusCircle';
 import { ProductModal } from '../ProductModal';
 import { useState } from 'react';
 import { IProduct } from '../../product';
+
 interface MenuProps{
   onAddToCart: (product: IProduct) => void;
   products: IProduct[];

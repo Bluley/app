@@ -1,4 +1,4 @@
-import { Categories } from '../components/Categories';
+
 import { Button } from '../components/Categories/Button';
 import { Header } from '../components/Header';
 import { Menu } from '../components/Menu';
@@ -10,20 +10,45 @@ import { Container,
   Footer,
   FooterContainer,
   CenteredContainer} from './styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Cart } from '../components/Cart';
 import { CartItem } from '../CartItem';
 import { IProduct } from '../product';
 import { ActivityIndicator } from 'react-native';
-import { products as mockProducts } from '../mocks/products';
 import { Empty } from '../components/Icons/Empty';
+import { CategoryProps } from '../Category';
+import { Categories } from '../components/Categories';
+import { api } from '../utils/api';
 
 export function Main(){
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState('');
   const [cartItens, setCartItens] = useState<CartItem[]>([]);
-  const [isLoding] = useState(false);
-  const [products] = useState<IProduct[]>(mockProducts);
+  const [isLoding, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [categories, setCategories] = useState<CategoryProps[]>([]);
+  const [seiIsLoadingInSelectCategory, setSeiIsLoadingInSelectCategory] = useState(false);
+
+
+  useEffect(() => {
+    Promise.all([
+      api.get('/categories'),
+      api.get('/products')
+    ]).then(([categoriesResponse, productsResponse]) => {
+      setCategories(categoriesResponse.data);
+      setProducts(productsResponse.data);
+      setIsLoading(false);
+    });
+  },[]);
+
+  async function handleselectCategory(categoryId: string){
+    const route = !categoryId ? '/products': `/categories/${categoryId}/products`;
+    setSeiIsLoadingInSelectCategory(true);
+    const { data } = await api.get(route);
+    setProducts(data);
+    setSeiIsLoadingInSelectCategory(false);
+  }
+
 
   function hadleOnSave(table: string){
     setSelectedTable(table);
@@ -71,7 +96,6 @@ export function Main(){
       if(item.quantity === 1){
         newCartItens.splice(itemIndex, 1);
 
-
         return newCartItens;
       }
 
@@ -99,12 +123,19 @@ export function Main(){
 
         )}
 
-        {!isLoding && (
-          <>
-            <CategoriesContainer>
-              <Categories/>
-            </CategoriesContainer>
+        <CategoriesContainer>
+          <Categories
+            categories={categories}
+            onSelectCategory={handleselectCategory}
+          />
+        </CategoriesContainer>
 
+        {seiIsLoadingInSelectCategory ? (
+          <CenteredContainer>
+            <ActivityIndicator size='large' color='#D73035'/>
+          </CenteredContainer>
+        ) : (
+          <>
             {products.length > 0 ? (
               <MenuContainer>
 
@@ -120,27 +151,28 @@ export function Main(){
             )}
           </>
 
+        )}
+
+
+
+      </Container>
+      <Footer style={{marginBottom: 24}}>
+        {!selectedTable && (
+          <Button onPress={() => setModalVisible(true)} disabeld={isLoding}>
+           Novo pedido
+          </Button>
+        )}
+
+        {selectedTable && (
+          <Cart
+            cartItens={cartItens}
+            onAdd={handleAddToCart}
+            onDecrement={handleRemoveFromCart}
+            onConfirmOrder={handleResetOrder}
+            selectTable={selectedTable}
+          />
 
         )}
-      </Container>
-      <Footer>
-        <FooterContainer>
-          {!selectedTable && (
-            <Button onPress={() => setModalVisible(true)} disabeld={isLoding}>
-           Novo pedido
-            </Button>
-          )}
-
-          {selectedTable && (
-            <Cart
-              cartItens={cartItens}
-              onAdd={handleAddToCart}
-              onDecrement={handleRemoveFromCart}
-              onConfirmOrder={handleResetOrder}
-            />
-
-          )}
-        </FooterContainer>
       </Footer>
 
 
