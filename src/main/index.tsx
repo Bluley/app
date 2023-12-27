@@ -6,11 +6,13 @@ import { TableModal } from '../components/TableModal';
 import { Container,
   CategoriesContainer,
   MenuContainer,
-  Footer,} from './styles';
+  Footer,
+  FooterContainer,} from './styles';
 import { useState } from 'react';
 import { Cart } from '../components/Cart';
 import { CartItem } from '../CartItem';
 import { IProduct } from '../product';
+
 export function Main(){
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTable, setSelectedTable] = useState('');
@@ -94,23 +96,23 @@ export function Main(){
         </MenuContainer>
       </Container>
       <Footer>
-        {/* <FooterContainer> */}
-        {!selectedTable && (
-          <Button onPress={() => setModalVisible(true)}>
+        <FooterContainer>
+          {!selectedTable && (
+            <Button onPress={() => setModalVisible(true)}>
            Novo pedido
-          </Button>
-        )}
+            </Button>
+          )}
 
-        {selectedTable && (
-          <Cart
-            cartItens={cartItens}
-            onAdd={handleAddToCart}
-            onDecrement={handleRemoveFromCart}
-            onConfirmOrder={handleResetOrder}
-          />
+          {selectedTable && (
+            <Cart
+              cartItens={cartItens}
+              onAdd={handleAddToCart}
+              onDecrement={handleRemoveFromCart}
+              onConfirmOrder={handleResetOrder}
+            />
 
-        )}
-        {/* </FooterContainer> */}
+          )}
+        </FooterContainer>
       </Footer>
 
 

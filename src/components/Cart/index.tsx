@@ -18,6 +18,7 @@ interface CartProps{
 }
 
 export function Cart({cartItens, onAdd, onDecrement, onConfirmOrder}: CartProps){
+  const [isLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
 
@@ -95,7 +96,7 @@ export function Cart({cartItens, onAdd, onDecrement, onConfirmOrder}: CartProps)
             </Text>
           )}
         </TotalContainer>
-        <Button  disabeld={cartItens.length === 0} onPress={handleConfirmOrder}>
+        <Button  disabeld={cartItens.length === 0} onPress={handleConfirmOrder} loading={isLoading}>
           Confirmar pedido
         </Button>
       </Sumary>
