@@ -1,4 +1,3 @@
-import { Alert } from 'react-native';
 import { Categories } from '../components/Categories';
 import { Button } from '../components/Categories/Button';
 import { Header } from '../components/Header';
@@ -19,7 +18,6 @@ export function Main(){
 
 
   function hadleOnSave(table: string){
-    Alert.alert('Mesa salva com sucesso!');
     setSelectedTable(table);
   }
 
