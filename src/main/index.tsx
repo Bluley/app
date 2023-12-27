@@ -11,7 +11,6 @@ import { Container,
 import { useState } from 'react';
 import { Cart } from '../components/Cart';
 import { CartItem } from '../CartItem';
-import { products } from '../mocks/products';
 import { IProduct } from '../product';
 export function Main(){
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,8 +23,9 @@ export function Main(){
     setSelectedTable(table);
   }
 
-  function handleCancelOrder(){
+  function handleResetOrder(){
     setSelectedTable('');
+    setCartItens;
   }
 
   function handleAddToCart(product: IProduct){
@@ -54,12 +54,39 @@ export function Main(){
     });
   }
 
+  function handleRemoveFromCart(product: IProduct){
+    setCartItens(oldItens => {
+      const itemIndex = oldItens.findIndex(item => item.product._id === product._id);
+
+      const item = oldItens[itemIndex];
+
+      const newCartItens = [...oldItens];
+
+      if(item.quantity === 1){
+        newCartItens.splice(itemIndex, 1);
+
+
+        return newCartItens;
+      }
+
+
+      newCartItens[itemIndex] = {
+        ...item,
+        quantity: item.quantity - 1,
+      };
+      return newCartItens;
+
+    });
+  }
+
+
+
   return(
     <>
       <Container>
         <Header
           selectedTable={selectedTable}
-          onCancelOrder={handleCancelOrder}
+          onCancelOrder={handleResetOrder}
         />
         <CategoriesContainer>
           <Categories/>
@@ -77,7 +104,12 @@ export function Main(){
         )}
 
         {selectedTable && (
-          <Cart cartItens={cartItens}/>
+          <Cart
+            cartItens={cartItens}
+            onAdd={handleAddToCart}
+            onDecrement={handleRemoveFromCart}
+            onConfirmOrder={handleResetOrder}
+          />
 
         )}
         {/* </FooterContainer> */}

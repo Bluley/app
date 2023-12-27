@@ -6,14 +6,40 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import { PlusCircle } from '../Icons/PlusCircle';
 import { MinusCircle } from '../Icons/MinusCircle';
 import { Button } from '../Categories/Button';
+import { IProduct } from '../../product';
+import { OrderConfirmedModal } from '../OrderConfirmedModal';
+import { useState } from 'react';
 
 interface CartProps{
   cartItens: CartItem[];
+  onAdd(product: IProduct): void;
+  onDecrement(product: IProduct): void;
+  onConfirmOrder(): void;
 }
 
-export function Cart({cartItens}: CartProps){
+export function Cart({cartItens, onAdd, onDecrement, onConfirmOrder}: CartProps){
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+
+  const total = cartItens.reduce((acc, item) => {
+    return acc + (item.product.price * item.quantity);
+  }, 0);
+
+  function handleConfirmOrder(){
+    setIsModalVisible(true);
+  }
+
+  function handleOnOK(){
+    setIsModalVisible(false);
+    onConfirmOrder();
+  }
+
   return(
     <>
+      <OrderConfirmedModal
+        visible={isModalVisible}
+        onOK={handleOnOK}
+      />
       {cartItens.length > 0 && (
         <FlatList
           data={cartItens}
@@ -44,10 +70,10 @@ export function Cart({cartItens}: CartProps){
               </ProductContainer>
 
               <Actions>
-                <TouchableOpacity  style={{marginRight: 24}}>
+                <TouchableOpacity  style={{marginRight: 24}} onPress={() => onAdd(cartItem.product)}>
                   <PlusCircle />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => onDecrement(cartItem.product)}>
                   <MinusCircle />
                 </TouchableOpacity>
               </Actions>
@@ -61,7 +87,7 @@ export function Cart({cartItens}: CartProps){
           {cartItens.length > 0 ? (
             <>
               <Text color='#666'>Total</Text>
-              <Text size={20} weight='600'>{formatCurrency(120)}</Text>
+              <Text size={20} weight='600'>{formatCurrency(total)}</Text>
             </>
           ): (
             <Text color='#999'>
@@ -69,7 +95,7 @@ export function Cart({cartItens}: CartProps){
             </Text>
           )}
         </TotalContainer>
-        <Button onPress={() => alert('confirmar pedido')} disabeld={cartItens.length === 0}>
+        <Button  disabeld={cartItens.length === 0} onPress={handleConfirmOrder}>
           Confirmar pedido
         </Button>
       </Sumary>
