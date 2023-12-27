@@ -14,45 +14,47 @@ interface CartProps{
 export function Cart({cartItens}: CartProps){
   return(
     <>
-      <FlatList
-        data={cartItens}
-        style={{marginBottom: 20, maxHeight: 150}}
-        keyExtractor={cartItem => cartItem.product._id}
-        showsVerticalScrollIndicator={false}
-        renderItem={({item: cartItem}) => (
-          <Item>
-            <ProductContainer>
-              <Image
-                source={{uri: `http://192.168.3.24:3001/uploads/${cartItem.product.imagePath}`}}
-              />
+      {cartItens.length > 0 && (
+        <FlatList
+          data={cartItens}
+          style={{marginBottom: 20, maxHeight: 150}}
+          keyExtractor={cartItem => cartItem.product._id}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item: cartItem}) => (
+            <Item>
+              <ProductContainer>
+                <Image
+                  source={{uri: `http://192.168.3.24:3001/uploads/${cartItem.product.imagePath}`}}
+                />
 
-              <QuantityContainer>
-                <Text size={14} color='#666'>
-                  {cartItem.quantity} x
-                </Text>
-              </QuantityContainer>7
+                <QuantityContainer>
+                  <Text size={14} color='#666'>
+                    {cartItem.quantity} x
+                  </Text>
+                </QuantityContainer>7
 
-              <ProductDetails>
-                <Text size={14} weight='600'>
-                  {cartItem.product.name}
-                </Text>
-                <Text size={14} color='#666' style={{marginTop: 4}}>
-                  {formatCurrency(cartItem.product.price)}
-                </Text>
-              </ProductDetails>
-            </ProductContainer>
+                <ProductDetails>
+                  <Text size={14} weight='600'>
+                    {cartItem.product.name}
+                  </Text>
+                  <Text size={14} color='#666' style={{marginTop: 4}}>
+                    {formatCurrency(cartItem.product.price)}
+                  </Text>
+                </ProductDetails>
+              </ProductContainer>
 
-            <Actions>
-              <TouchableOpacity  style={{marginRight: 24}}>
-                <PlusCircle />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <MinusCircle />
-              </TouchableOpacity>
-            </Actions>
-          </Item>
-        )}
-      />
+              <Actions>
+                <TouchableOpacity  style={{marginRight: 24}}>
+                  <PlusCircle />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <MinusCircle />
+                </TouchableOpacity>
+              </Actions>
+            </Item>
+          )}
+        />
+      )}
 
       <Sumary>
         <TotalContainer>
@@ -67,7 +69,7 @@ export function Cart({cartItens}: CartProps){
             </Text>
           )}
         </TotalContainer>
-        <Button onPress={() => alert('confirmar pedido')}>
+        <Button onPress={() => alert('confirmar pedido')} disabeld={cartItens.length === 0}>
           Confirmar pedido
         </Button>
       </Sumary>
