@@ -8,7 +8,6 @@ import { Container,
   CategoriesContainer,
   MenuContainer,
   Footer,
-  FooterContainer,
   CenteredContainer} from './styles';
 import { useEffect, useState } from 'react';
 import { Cart } from '../components/Cart';
@@ -39,7 +38,7 @@ export function Main(){
       setProducts(productsResponse.data);
       setIsLoading(false);
     });
-  },[]);
+  }, []);
 
   async function handleselectCategory(categoryId: string){
     const route = !categoryId ? '/products': `/categories/${categoryId}/products`;
